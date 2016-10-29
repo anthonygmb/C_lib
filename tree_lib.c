@@ -33,7 +33,14 @@ typedef struct NOEUD_Q {
 	int info;
 	struct noeud* lFils; // liste des fils
 	struct noeud* lFrere; // liste des frères
-} NOEUD;
+} NOEUD_Q;
+
+// structure de noeud d'arbre quelconque lexicographique
+typedef struct NOEUD_QL {
+	char info;
+	struct noeud* lFils; // liste des fils
+	struct noeud* lFrere; // liste des frères
+} NOEUD_QL;
 
 /*
  * Fonction d'affichage des NOEUD de droite
@@ -133,13 +140,41 @@ supprimerMot() {
  * Fonction de recherche de mots dans un arbre
  * quelconque lexicographique
  */
-rechercherMot() {
-
+int rechinsertion(char mot[], NOEUD_QL n) {
+	NOEUD_QL pr, pc;
+	int i;
+	/*  à chaque tour de cette boucle on recherche le caractère */
+	/*  mot[i] parmi les fils du nœud pointé par n */
+	for(i = 0; ; i++) {
+		pr = NULL;
+		pc = n->lFils;
+		while (pc != NULL && pc->info < mot[i]) {
+			pr = pc;
+			pc = pc->lFrere;
+		}
+		if (pc != NULL && pc->info == mot[i]) {
+			if (mot[i] == '\0')
+				return 1; /*  le mot existait */
+			n = pc;
+		}
+		else {
+			pc = noeud(mot[i], NULL, pc);
+			if (pr != NULL)
+				pr->lFrere = pc;
+			else
+				n->lFils = pc;
+			while (mot[i] != '\0') {
+				pc->lFils = noeud(mot[++i], NULL, NULL);
+				pc = pc->lFils;
+			}
+			return 0; /*  le mot est nouveau */
+		}
+	}
 }
 
 /*
-void main() {
+   void main() {
 
-}
-*/
+   }
+   */
 
