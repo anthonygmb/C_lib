@@ -20,25 +20,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "list_chain_lib.h"
+#include "graph_lib.h"
 
 #define INFINITE -1;
 #define NIL -1;
 
-/**
- * Enum du type de graphe
- */
+/*
+// Enum du type de graphe
 typedef enum {ORIENTED, NON_ORIENTED} graph_type;
 
 typedef struct graphL *graphL;
 
-/**
- * Structure du graphe
- */
+// Structure du graphe
 struct graphL {
 	int size; // les sommets du graphe sont numérotés de 0 à size-1
 	graph_type type; // ORIENTED ou NON_ORIENTED
 	LISTE* adjacent; // le champ adjacent est le tableau des listes d'adjacence
 };
+*/
 
 /**
  * Fonction de création de graphe avec size sommets et de type graph_type

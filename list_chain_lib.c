@@ -19,7 +19,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "list_chain_lib.h"
 
+/*
 // déclaration de la structure maillon
 typedef struct maillon {
 	int info;
@@ -28,6 +30,7 @@ typedef struct maillon {
 
 // déclaration d'une LISTE de type maillon
 typedef MAILLON* LISTE;
+*/
 
 /*
  * fonction d'insertion de valeur
@@ -108,6 +111,7 @@ void efface(LISTE* pL) {
 	}
 }
 
+/*
 // définition de la structure MA_FILE
 typedef struct file {
 	LISTE deb;
@@ -117,6 +121,7 @@ typedef struct file {
 // définition des types auxiliaires
 typedef enum { FAUX, VRAI } booleen;
 typedef enum { OK, ERROR } status;
+*/
 
 /*
  * fonction make_file, retourne une file allouée
@@ -231,8 +236,7 @@ int main() {
 	print(L);
 	printf((L == NULL) ? "la liste est NULL\n" : "Erreur de suppression\n");
 }
-*/
-/*
+
 int main() {
 	// création de liste avec la méthode make_file et vérification
 	MA_FILE maFile = make_file();

@@ -18,7 +18,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "tree_lib.h"
 
+/*
 // structure de noeud d'arbre binaire arithmetique
 typedef struct NOEUD_B {
 	int info;
@@ -41,6 +43,7 @@ typedef struct NOEUD_QL {
 	struct noeud* lFils; // liste des fils
 	struct noeud* lFrere; // liste des frères
 } NOEUD_QL;
+*/
 
 /*
  * Fonction d'affichage des NOEUD de droite
@@ -124,17 +127,21 @@ NOEUD_B* construireArbreMulti(char* t, int* p_i) {
  * Fonction d'ajout de mots dans un arbre
  * quelconque lexicographique
  */
+/*
 ajouterMot() {
 
 }
+*/
 
 /*
  * Fonction de suppression de mots dans un arbre
  * quelconque lexicographique
  */
+/*
 supprimerMot() {
 
 }
+*/
 
 /*
  * Fonction de recherche de mots dans un arbre
@@ -167,7 +174,7 @@ int rechinsertion(char mot[], NOEUD_QL n) {
 				pc->lFils = noeud(mot[++i], NULL, NULL);
 				pc = pc->lFils;
 			}
-			return 0; /*  le mot est nouveau */
+			return 0; /* le mot est nouveau */
 		}
 	}
 }
