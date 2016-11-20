@@ -18,32 +18,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "tree_lib.h"
-
-/*
-// structure de noeud d'arbre binaire arithmetique
-typedef struct NOEUD_B {
-	int info;
-	char operateur;
-	struct NOEUD_B* filsGauche;
-	struct NOEUD_B* filsDroit;
-} NOEUD_B;
-NOEUD_B* pinit;
-
-// structure de noeud d'arbre quelconque
-typedef struct NOEUD_Q {
-	int info;
-	struct noeud* lFils; // liste des fils
-	struct noeud* lFrere; // liste des frères
-} NOEUD_Q;
-
-// structure de noeud d'arbre quelconque lexicographique
-typedef struct NOEUD_QL {
-	char info;
-	struct noeud* lFils; // liste des fils
-	struct noeud* lFrere; // liste des frères
-} NOEUD_QL;
-*/
+#include "list_chain_lib.h"
 
 /*
  * Fonction d'affichage des NOEUD de droite
@@ -54,6 +31,14 @@ void afficheDroite(NOEUD_B* pc) {
 		printf("%d\n", pc -> info);
 		pc = pc -> filsDroit;
 	}
+}
+
+/*
+ * Fonction pour déterminer si le noeud est une feuille
+ */
+bool feuille (NOEUD_B* p) {
+	if (p -> filsGauche == NULL && p -> filsDroit == NULL) return true;
+	else return false;
 }
 
 /*
@@ -76,7 +61,7 @@ void afficheArbre(NOEUD_B* pc) {
  */
 int calculeArbre(NOEUD_B* pc) {
 	if (pc != NULL) {
-		if (pc -> filsGauche == NULL && pc -> filsDroit == NULL) {
+		if (feuille(pc) == true) {
 			return (pc -> info);
 		} else {
 			int x1 = calculeArbre(pc -> filsGauche);
@@ -95,7 +80,27 @@ int calculeArbre(NOEUD_B* pc) {
  * de type addition
  */
 NOEUD_B* construireArbreAddi(char* t, int* p_i) {
+	NOEUD_B* n1;
+	NOEUD_B* n2;
+	n1 = (NOEUD_B*) malloc(sizeof(NOEUD_B));
+	n1 -> operateur = NULL;
+	n1 -> info = t[*p_i];
+	n1 -> filsGauche = NULL;
+	n1 -> filsDroit = NULL;
 
+	*p_i = *p_i + 1;
+	if (t[*p_i] == '+') {
+		n2 = (NOEUD_B*) malloc(sizeof(NOEUD_B));
+		n2 -> operateur = t[*p_i];
+		n2 -> filsGauche = n1;
+		if (t[*p_i] == '*') {
+			*p_i = *p_i - 1;
+			n2 -> filsDroit = ConstruitArbreMult(t, p_i);
+			*p_i = *p_i + 1;
+		}
+		n2 -> filsDroit = ConstruitArbreAddi(t, *p_i);
+	}
+	else return n1;
 }
 
 /*
@@ -116,7 +121,7 @@ NOEUD_B* construireArbreMulti(char* t, int* p_i) {
 		n2 -> operateur = t[*p_i];
 		n2 -> filsGauche = n1;
 		*p_i = *p_i + 1;
-		n2 -> filsGauche = construireArbre(t, p_i);
+		n2 -> filsGauche = construireArbreMulti(t, p_i);
 		return n2;
 	} else {
 		return n1;
@@ -127,57 +132,77 @@ NOEUD_B* construireArbreMulti(char* t, int* p_i) {
  * Fonction d'ajout de mots dans un arbre
  * quelconque lexicographique
  */
-/*
-ajouterMot() {
-
+void ajouterMot(NOEUD_QL *pinit, char *t, int i) {
+	NOEUD_QL *p;
+	p = recherche(pinit -> lFils, t[i]);
+	if (p == NULL) {
+		accrocher(&pinit -> lFils, t, i);
+	} else if (t[i] != '#') {
+		chercher_mot (p -> lFils, t, i + 1);
+	}
 }
-*/
+
+void accrocher(NOEUD_QL *pinit, char *t, int i) {
+	NOEUD_QL *pdeb;
+	pdeb = construire_list(t, i);
+	pdeb -> lFrere = pinit -> lFils;
+	pinit -> lFils = pdeb;
+}
 
 /*
  * Fonction de suppression de mots dans un arbre
  * quelconque lexicographique
  */
 /*
-supprimerMot() {
+   supprimerMot() {
 
-}
-*/
+   }
+   */
 
 /*
  * Fonction de recherche de mots dans un arbre
  * quelconque lexicographique
  */
-int rechinsertion(char mot[], NOEUD_QL n) {
-	NOEUD_QL pr, pc;
-	int i;
-	/*  à chaque tour de cette boucle on recherche le caractère */
-	/*  mot[i] parmi les fils du nœud pointé par n */
-	for(i = 0; ; i++) {
-		pr = NULL;
-		pc = n->lFils;
-		while (pc != NULL && pc->info < mot[i]) {
-			pr = pc;
-			pc = pc->lFrere;
-		}
-		if (pc != NULL && pc->info == mot[i]) {
-			if (mot[i] == '\0')
-				return 1; /*  le mot existait */
-			n = pc;
+bool chercher_mot(NOEUD_QL *pinit, char *t, int i) {
+	NOEUD_QL *p;
+	p = recherche(pinit -> lFils, t[i]);
+	if (p == NULL) {
+		return false;
+	} else if (t[i] == '#') {
+		return true;
+	} else {
+		return chercher_mot(p -> lFils, t, i + 1);
+	}
+}
+
+/*
+ * Fonction pour ajouter un noeud au tas
+ */
+void ajout_tas (int *t, int *ne, int x) {
+	int k, tmp;
+	bool flag = true;
+	t[*ne] = x;
+	k = *ne;
+	while (k > 0 && flag == true) {
+		if (t[k]%2 == 0) {
+			if (t[k] > t[(k-2)/2]) {
+				tmp = t[k];
+				t[k] = t[(k-2)/2];
+				t[(k-2)/2]=tmp;
+			}
+			else flag = false;
 		}
 		else {
-			pc = noeud(mot[i], NULL, pc);
-			if (pr != NULL)
-				pr->lFrere = pc;
-			else
-				n->lFils = pc;
-			while (mot[i] != '\0') {
-				pc->lFils = noeud(mot[++i], NULL, NULL);
-				pc = pc->lFils;
+			if (t[k] > t[(k-1)/2]) {
+				tmp = t[k];
+				t[k] = t[(k-1)/2];
+				t[(k-2)/2]=tmp;
 			}
-			return 0; /* le mot est nouveau */
+			else flag = false;
 		}
 	}
 }
+
 
 /*
    void main() {

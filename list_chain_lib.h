@@ -45,15 +45,15 @@ typedef struct file {
 } *MA_FILE;
 
 // définition des types auxiliaires
-typedef enum { FAUX, VRAI } booleen;
-typedef enum { OK, ERROR } status;
+//typedef enum { FAUX, VRAI } booleen;
+//typedef enum { OK, ERROR } status;
 
 // déclaration des fonctions
 MA_FILE make_file();
-booleen vide(MA_FILE f);
-status tete_file(MA_FILE f, int *element);
-status enfile(MA_FILE f, int n);
-status defile(MA_FILE f);
+bool vide(MA_FILE f);
+int tete_file(MA_FILE f, int *element);
+int enfile(MA_FILE f, int n);
+int defile(MA_FILE f);
 
 #endif
 

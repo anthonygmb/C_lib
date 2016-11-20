@@ -19,18 +19,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "list_chain_lib.h"
-
-/*
-// déclaration de la structure maillon
-typedef struct maillon {
-	int info;
-	struct maillon* suivant;
-} MAILLON;
-
-// déclaration d'une LISTE de type maillon
-typedef MAILLON* LISTE;
-*/
+#include "graph_lib.h"
 
 /*
  * fonction d'insertion de valeur
@@ -112,18 +103,6 @@ void efface(LISTE* pL) {
 }
 
 /*
-// définition de la structure MA_FILE
-typedef struct file {
-	LISTE deb;
-	LISTE fin;
-} *MA_FILE;
-
-// définition des types auxiliaires
-typedef enum { FAUX, VRAI } booleen;
-typedef enum { OK, ERROR } status;
-*/
-
-/*
  * fonction make_file, retourne une file allouée
  * dynamiquement
  */
@@ -138,20 +117,20 @@ MA_FILE make_file() {
  * fonction de vérification de contenance
  * d'une file
  */
-booleen vide(MA_FILE f) {
-	return (f -> deb == NULL && f -> fin == NULL) ? VRAI : FAUX;
+bool vide(MA_FILE f) {
+	return (f -> deb == NULL && f -> fin == NULL) ? true : false;
 }
 
 /*
  * fonction de récupération de l'élément
  * en tete de file
  */
-status tete_file(MA_FILE f, int *element) {
-	status stat = ERROR;
-	if(vide(f) == FAUX) {
+int tete_file(MA_FILE f, int *element) {
+	int stat = 0;
+	if(vide(f) == false) {
 		LISTE L = (f -> deb);
 		*element = (L -> info);
-		stat = OK;
+		stat = 1;
 	}
 	return stat;
 }
@@ -159,123 +138,31 @@ status tete_file(MA_FILE f, int *element) {
 /*
  * fonction d'ajout d'élément en fin de file
  */
-status enfile(MA_FILE f, int n) {
-	if (f -> fin != NULL) {
-		LISTE L = (f -> fin);
-		insert_fin(&(f -> fin), n);
-		f -> fin = L -> suivant;
-	} else if (f -> deb != NULL) {
-		LISTE L = (f -> deb);
-		insert_fin(&(f -> deb), n);
-		f -> fin = L -> suivant;
+int enfile(MA_FILE f, int n) {
+
+	if (f -> deb == NULL) {
+		insert_tete(&(f -> deb), n);
+		f -> fin = f -> deb;
 	} else {
-		LISTE L2 = NULL;
-		insert_tete(&L2, n);
-		f -> deb = f -> fin = L2;
+		insert_tete(&(f-> fin -> suivant), n);
+		f -> fin = f -> fin -> suivant;
 	}
-	return OK;
+	return 1;
 }
 
 /*
  * fonction de suppression de l'élément
  * en tete de file
  */
-status defile(MA_FILE f) {
-	status stat = ERROR;
-	if(vide(f) == FAUX) {
+int defile(MA_FILE f) {
+	int stat = 0;
+	if(vide(f) == false) {
 		supprimer_premier(&(f -> deb));
-		stat = OK;
+		stat = 1;
+		if (f -> deb == NULL) {
+			f -> fin = NULL;
+		}
 	}
 	return stat;
 }
-
-/*
-int main() {
-	// création d'une liste NULL et insertion de valeur en tete
-	LISTE L = NULL;
-	insert_tete(&L, 1);
-	print(L);
-	printf("\n");
-
-	// insertion de valeur à la fin sur la liste L
-	insert_fin(&L, 2);
-	print(L);
-	printf("\n");
-
-	// insertion de valeur en tête sur la liste L
-	insert_tete(&L, 0);
-	print(L);
-	printf("\n");
-
-	// recherche de valeur
-	int nbToSearch = 6;
-	printf((recherche(L, nbToSearch) != NULL) ? "valeur trouvée" : "valeur non trouvée\n");
-
-	// suppression de la première occurence de la liste
-	supprimer_premier(&L);
-	print(L);
-	printf("\n");
-
-	// suppression de la liste et insertion de dix valeurs
-	L = NULL;
-	for(int i = 0; i < 10; i++) {
-		insert_tete(&L, i);
-	}
-
-	// recherche et suppression de l'occurence correspondante
-	print(L);
-	printf("\n");
-	supprime(&L, 5);
-	print(L);
-	printf("\n");
-
-	// effacement de toute la liste
-	print(L);
-	printf("\n");
-	efface(&L);
-	print(L);
-	printf((L == NULL) ? "la liste est NULL\n" : "Erreur de suppression\n");
-}
-
-int main() {
-	// création de liste avec la méthode make_file et vérification
-	MA_FILE maFile = make_file();
-	if(maFile != NULL && maFile -> deb == NULL && maFile -> fin == NULL) {
-		printf("création de la liste réussie\n");
-	} else {
-		printf("échec de création de la liste\n");
-	}
-
-	// test de contenance de la liste avec la fonction vide
-	if(vide(maFile) == VRAI) {
-		printf("la liste est vide\n");
-	} else {
-		printf("la liste n'est pas vide\n");
-	}
-
-	// ajout d'un maillon quand la liste est NULL
-	enfile(maFile, 7);
-	print(maFile -> deb);
-	printf("\n");
-	// ajout d'un maillon quand la liste contient un maillon
-	enfile(maFile, 2);
-	print(maFile -> deb);
-	printf("\n");
-
-	// recherche d'un élément dans la liste
-	int *pElement = malloc(sizeof(int));
-	if (tete_file(maFile, pElement) == OK) {
-		printf("Element trouvé : %d\n", *pElement);
-	} else {
-		printf("Element non trouvé\n");
-	}
-
-	// suppression du premier maillon de la file
-	defile(maFile);
-	print(maFile -> deb);
-	printf("\n");
-
-	return 0;
-}
-*/
 
