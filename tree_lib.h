@@ -55,6 +55,16 @@ void accrocher(NOEUD_QL *pinit, char *t, int i);
 //int rechinsertion(char mot[], NOEUD_QL n);
 bool chercher_mot(NOEUD_QL *pinit, char *t, int i);
 void ajout_tas (int *t, int *ne, int x);
+void heapSort();
+int filsG(int n, int t[n]);
+int filsD(int n, int t[n]);
+void permuter (int t[] ,int i ,int j);
+void entasser(int i, int n, int t[n]);
+void construire_tas(int n, int t[n]);
+void heapSort(int n, int t[n]);
+void faire_monter (int i, int *t);
+void faire_descendre (int i, int *t, int n);
+void deplace_racine_et_refait_tas (int *t, int n);
 
 #endif
 
